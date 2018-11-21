@@ -7,6 +7,7 @@
   "dependencies": {
     "@vx/gradient": "0.0.165",
     "@vx/mock-data": "0.0.179",
+    "@vx/responsive": "0.0.179",
     "@vx/scale": "0.0.179",
     "@vx/shape": "0.0.179",
     "d3": "5.7.0",
