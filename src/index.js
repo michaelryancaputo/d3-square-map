@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom';
+import { ParentSize } from '@vx/responsive';
 
 import React from 'react';
 import { Group } from '@vx/group';
@@ -71,12 +72,12 @@ const gridmapLayoutUsa = [
   { x: 7, y: 7, key: 'FL', name: 'Florida' },
 ];
 
-var options = {
-  rectWidth: 45,
-  rectHeight: 45,
-};
+const Chart = ({ width, height }) => {
+  var options = {
+    rectWidth: width / 12,
+    rectHeight: height / 8,
+  };
 
-const App = ({ width, height }) => {
   return (
     <svg width={width * options.rectWidth} height={height * options.rectHeight}>
       <Group>
@@ -103,10 +104,16 @@ const App = ({ width, height }) => {
   );
 };
 
-App.defaultProps = {
+Chart.defaultProps = {
   width: 12,
   height: 8,
 };
+
+const App = props => (
+  <div style={{ width: `100vw`, height: 500 }}>
+    <ParentSize>{parent => <Chart {...parent} />}</ParentSize>
+  </div>
+);
 
 const rootElement = document.getElementById('root');
 ReactDOM.render(<App />, rootElement);
