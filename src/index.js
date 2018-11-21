@@ -115,14 +115,16 @@ class RawChart extends React.Component {
       <React.Fragment>
         <svg
           width={width * options.rectWidth}
-          height={height * options.rectHeight}>
+          height={height * options.rectHeight}
+        >
           <Group>
             {gridmapLayoutUsa.map((d, i) => {
               return (
                 <Group
                   key={`box-${d.name}`}
                   transform={`translate(${d.x * options.rectWidth},${d.y *
-                    options.rectHeight})`}>
+                    options.rectHeight})`}
+                >
                   <rect
                     x="0"
                     y="0"
@@ -140,7 +142,8 @@ class RawChart extends React.Component {
                     font-size="10"
                     fill="white"
                     text-anchor="middle"
-                    alignment-baseline="central">
+                    alignment-baseline="central"
+                  >
                     {d.key}
                   </text>
                 </Group>
@@ -153,7 +156,8 @@ class RawChart extends React.Component {
             // set this to random so it correctly updates with parent bounds
             key={Math.random()}
             top={tooltipTop}
-            left={tooltipLeft}>
+            left={tooltipLeft}
+          >
             <p>
               <strong>{tooltipData.name}</strong>
               <br />
