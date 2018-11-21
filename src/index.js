@@ -1,5 +1,7 @@
 import ReactDOM from 'react-dom';
 import { ParentSize } from '@vx/responsive';
+import { withTooltip, TooltipWithBounds } from '@vx/tooltip';
+import { localPoint } from '@vx/event';
 
 import React from 'react';
 import { Group } from '@vx/group';
@@ -72,42 +74,79 @@ const gridmapLayoutUsa = [
   { x: 7, y: 7, key: 'FL', name: 'Florida' },
 ];
 
-const Chart = ({ width, height }) => {
-  var options = {
-    rectWidth: width / 12,
-    rectHeight: height / 8,
+class RawChart extends React.Component {
+  handleMouseOver = (e, tooltipData) => {
+    const coords = localPoint(e.target.ownerSVGElement, e);
+    this.props.showTooltip({
+      tooltipLeft: coords.x,
+      tooltipTop: coords.y,
+      tooltipData,
+    });
   };
 
-  return (
-    <svg width={width * options.rectWidth} height={height * options.rectHeight}>
-      <Group>
-        {gridmapLayoutUsa.map((d, i) => {
-          return (
-            <Group
-              key={`box-${d.name}`}
-              transform={`translate(${d.x * options.rectWidth},${d.y *
-                options.rectHeight})`}>
-              <rect
-                x="0"
-                y="0"
-                fill={color(d.name.length)}
-                opacity={0.5}
-                stroke={color(d.name.length)}
-                width={options.rectWidth}
-                height={options.rectHeight}
-              />
-            </Group>
-          );
-        })}
-      </Group>
-    </svg>
-  );
-};
+  render() {
+    const {
+      width,
+      height,
+      tooltipData,
+      tooltipLeft,
+      tooltipTop,
+      tooltipOpen,
+      hideTooltip,
+    } = this.props;
 
-Chart.defaultProps = {
-  width: 12,
-  height: 8,
-};
+    const options = {
+      rectWidth: width / 12,
+      rectHeight: height / 8,
+    };
+
+    return (
+      <React.Fragment>
+        <svg
+          width={width * options.rectWidth}
+          height={height * options.rectHeight}>
+          <Group>
+            {gridmapLayoutUsa.map((d, i) => {
+              return (
+                <Group
+                  key={`box-${d.name}`}
+                  transform={`translate(${d.x * options.rectWidth},${d.y *
+                    options.rectHeight})`}>
+                  <rect
+                    x="0"
+                    y="0"
+                    fill={color(d.name.length)}
+                    opacity={0.5}
+                    stroke={color(d.name.length)}
+                    width={options.rectWidth}
+                    height={options.rectHeight}
+                    onMouseOver={e => this.handleMouseOver(e, d)}
+                    onMouseOut={hideTooltip}
+                  />
+                </Group>
+              );
+            })}
+          </Group>
+        </svg>
+        {tooltipOpen && (
+          <TooltipWithBounds
+            // set this to random so it correctly updates with parent bounds
+            key={Math.random()}
+            top={tooltipTop}
+            left={tooltipLeft}>
+            <p>
+              <strong>{tooltipData.name}</strong>
+              <br />
+              {tooltipData.key}
+            </p>
+          </TooltipWithBounds>
+        )}
+      </React.Fragment>
+    );
+  }
+}
+
+const Chart = withTooltip(RawChart);
 
 const App = props => (
   <div style={{ width: `100vw`, height: 500 }}>
